@@ -3,6 +3,7 @@ const DefaultPage = () => {
     <div className="dashboard">
       <div className="dashboard-container">
         <div className="app-component-content">
+          {window.location.href}
           <p>Nothing to show here. Are you trying to access any of the following paths?</p>
           <ul className="ui-location">
             <li>
