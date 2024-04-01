@@ -1,22 +1,29 @@
-import React, { useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Icon from "../../assets/GearSix.svg";
 import localeTexts from "../../common/locales/en-us/index";
 import parse from "html-react-parser";
 import styles from "./AppConfiguration.module.css";
 import { useInstallationData } from "../../common/hooks/useInstallationData";
+import { useAppConfig } from "../../common/hooks/useAppConfig";
 import Tooltip from "../Tooltip/Tooltip";
 
 const AppConfigurationExtension: React.FC = () => {
   const { installationData, setInstallationData } = useInstallationData();
+  const appConfig = useAppConfig();
 
-  const appConfigDataRef = useRef<any>("");
-  const serverConfigDataRef = useRef<any>("");
+  useEffect(() => {
+    updateConfig(null);
+  }, [appConfig]);
 
   const updateConfig = async (elem: any) => {
+    console.log(elem?.target)
     if (typeof setInstallationData !== "undefined") {
       await setInstallationData({
-        configuration: { "Sample App Configuration": appConfigDataRef.current.value },
-        serverConfiguration: { "Sample Server Configuration": serverConfigDataRef.current.value },
+        configuration: {
+          openAIOrganization: elem?.target.id.includes("openAIOrganization") ? elem.target.value : appConfig?.openAIOrganization || "",
+          openAIAPIKey: elem?.target.id.includes("openAIAPIKey") ? elem.target.value : appConfig?.openAIAPIKey || "",
+        },
+        serverConfiguration: {},
       });
     }
   };
@@ -34,55 +41,41 @@ const AppConfigurationExtension: React.FC = () => {
             <div className={`${styles.infoContainerWrapper}`}>
               <div className={`${styles.infoContainer}`}>
                 <div className={`${styles.labelWrapper}`}>
-                  <label htmlFor="appConfigData">Sample App Configuration Field </label>
+                  <label htmlFor="appConfigData">OpenAI Organization Key</label>
                   <Tooltip content="You can save this field for information such as Username, Email, Number, Date, etc." />
                 </div>
               </div>
               <div className={`${styles.inputContainer}`}>
                 <input
                   type="text"
-                  ref={appConfigDataRef}
                   required
-                  value={installationData.configuration.appConfigData}
+                  value={installationData.configuration.openAIOrganization}
                   placeholder="Enter Field Value"
-                  name="appConfigData"
+                  id="openAIOrganizationField"
                   autoComplete="off"
                   className={`${styles.fieldInput}`}
                   onChange={updateConfig}></input>
               </div>
             </div>
-            <div className={`${styles.descriptionContainer}`}>
-              <p>
-                Use this field to share non-sensitive configurations of your app with other locations.
-              </p>
-            </div>
-          </div>
-
-          <div className={`${styles.configContainer}`}>
+            <br />
             <div className={`${styles.infoContainerWrapper}`}>
               <div className={`${styles.infoContainer}`}>
                 <div className={`${styles.labelWrapper}`}>
-                  <label htmlFor="serverConfigData">Sample Server Configuration Field </label>
-                  <Tooltip content="You can use this field for information such as Passwords, API Key, Client Secret, Client ID, etc." />
+                  <label htmlFor="appConfigData">OpenAI API Key</label>
+                  <Tooltip content="You can save this field for information such as Username, Email, Number, Date, etc." />
                 </div>
               </div>
               <div className={`${styles.inputContainer}`}>
                 <input
                   type="text"
-                  ref={serverConfigDataRef}
                   required
-                  value={installationData.serverConfiguration.serverConfigData}
+                  value={installationData.configuration.openAIAPIKey}
                   placeholder="Enter Field Value"
-                  name="serverConfigData"
+                  id="openAIAPIKeyField"
                   autoComplete="off"
+                  className={`${styles.fieldInput}`}
                   onChange={updateConfig}></input>
               </div>
-            </div>
-            <div className={`${styles.descriptionContainer}`}>
-              <p>
-                Use this field to store sensitive configurations of your app. It is directly shared with the backend via
-                webhooks.
-              </p>
             </div>
           </div>
         </div>
