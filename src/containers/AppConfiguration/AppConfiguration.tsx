@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Icon from "../../assets/GearSix.svg";
 import localeTexts from "../../common/locales/en-us/index";
 import parse from "html-react-parser";
@@ -11,22 +11,24 @@ const AppConfigurationExtension: React.FC = () => {
   const { installationData, setInstallationData } = useInstallationData();
   const appConfig = useAppConfig();
 
-  useEffect(() => {
-    updateConfig(null);
-  }, [appConfig]);
-
   const updateConfig = async (elem: any) => {
-    console.log(elem?.target)
+    console.log(elem?.target);
     if (typeof setInstallationData !== "undefined") {
       await setInstallationData({
         configuration: {
-          openAIOrganization: elem?.target.id.includes("openAIOrganization") ? elem.target.value : appConfig?.openAIOrganization || "",
+          openAIOrganization: elem?.target.id.includes("openAIOrganization")
+            ? elem.target.value
+            : appConfig?.openAIOrganization || "",
           openAIAPIKey: elem?.target.id.includes("openAIAPIKey") ? elem.target.value : appConfig?.openAIAPIKey || "",
         },
         serverConfiguration: {},
       });
     }
   };
+
+  useEffect(() => {
+    updateConfig(null);
+  }, [appConfig]);
 
   return (
     <div className={`${styles.layoutContainer}`}>
